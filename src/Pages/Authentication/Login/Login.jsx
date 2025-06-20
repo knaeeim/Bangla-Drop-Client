@@ -15,6 +15,9 @@ const Login = () => {
     return (
         <div className="space-y-5 flex justify-center items-center">
             <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-sm">
+                <div className="mb-5">
+                    <h1 className="text-3xl font-bold text-center">Login Now!!</h1>
+                </div>
                 <fieldset className="fieldset space-y-4">
                     <div>
                         <label className="label">Email</label>
@@ -54,7 +57,7 @@ const Login = () => {
                     </div>
                 </fieldset>
                 <div className="flex justify-center">
-                    <button className="btn btn-neutral mt-4">Login</button>
+                    <button className="btn btn-neutral mt-4 w-full">Login</button>
                 </div>
             </form>
         </div>
