@@ -1,11 +1,14 @@
-import React from 'react';
-import logo from '../../../assets/logo.png'
+import React from "react";
+import logo from "../../../assets/logo.png";
+import { Link } from "react-router";
 
 const BanglaDropLogo = () => {
     return (
-        <div>
-            <img src={logo} alt='Logo'></img>
-        </div>
+        <Link to="/">
+            <div>
+                <img src={logo} alt="Logo"></img>
+            </div>
+        </Link>
     );
 };
 

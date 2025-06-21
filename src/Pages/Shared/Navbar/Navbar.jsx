@@ -1,15 +1,31 @@
 import React from "react";
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 import BanglaDropLogo from "../BanglaDropLogo/BanglaDropLogo";
+import useAuth from "../../../hooks/useAuth";
 
 const Navbar = () => {
+    const { user, logOutUser } = useAuth();
+
+    const handleLogout = () => {
+        logOutUser()
+            .then((result) => {
+                console.log(result);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
     const navItems = (
         <>
             <li>
-                <NavLink to='/'>Home</NavLink>
+                <NavLink to="/">Home</NavLink>
             </li>
             <li>
-                <NavLink to='/about'>About Us</NavLink>
+                <NavLink to="/coverage">Coverage</NavLink>
+            </li>
+            <li>
+                <NavLink to="/about">About Us</NavLink>
             </li>
         </>
     );
@@ -51,13 +67,29 @@ const Navbar = () => {
                 </div>
             </div>
             <div className="navbar-center hidden lg:flex">
-                <ul className="menu menu-horizontal px-1">
-                    {navItems}
-                </ul>
+                <ul className="menu menu-horizontal px-1">{navItems}</ul>
             </div>
-            <div className="navbar-end">
-                <a className="btn">Button</a>
-            </div>
+            {user ? (
+                <div className="navbar-end gap-4">
+                    <div className="avatar">
+                        <div className="ring-primary ring-offset-base-100 w-8 rounded-full ring-2 ring-offset-2">
+                            <img src={user?.photoURL} />
+                        </div>
+                    </div>
+                    <Link onClick={handleLogout} to="/login" className="btn btn-primary text-black">
+                        Logout
+                    </Link>
+                </div>
+            ) : (
+                <div className="navbar-end gap-4">
+                    <Link to="/login" className="btn btn-primary text-black">
+                        Login
+                    </Link>
+                    <Link to="/register" className="btn btn-primary text-black">
+                        Register
+                    </Link>
+                </div>
+            )}
         </div>
     );
 };
