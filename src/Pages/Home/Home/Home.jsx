@@ -5,6 +5,7 @@ import ClientLogosMarquee from '../ClientLogosMarquee/ClientLogosMarquee';
 import Benefits from '../Benefits/Benefits';
 import BeMerchent from '../BeMerchent/BeMerchent';
 import HowItWorks from '../HowitWorks/HowItWorks';
+import Reviews from '../ReviewCarousel/Reviews';
 
 const Home = () => {
     return (
@@ -15,6 +16,7 @@ const Home = () => {
             <ClientLogosMarquee></ClientLogosMarquee>
             <Benefits></Benefits>
             <BeMerchent></BeMerchent>
+            <Reviews></Reviews>
         </div>
     );
 };
