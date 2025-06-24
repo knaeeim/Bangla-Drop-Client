@@ -22,8 +22,20 @@ const Navbar = () => {
                 <NavLink to="/">Home</NavLink>
             </li>
             <li>
+                <NavLink to="/sendParcel">Send a Parcel</NavLink>
+            </li>
+            <li>
                 <NavLink to="/coverage">Coverage</NavLink>
             </li>
+
+            {user && (
+                <>
+                    <li>
+                        <NavLink to="/dashboard">DashBoard</NavLink>
+                    </li>
+                </>
+            )}
+
             <li>
                 <NavLink to="/about">About Us</NavLink>
             </li>
@@ -76,7 +88,11 @@ const Navbar = () => {
                             <img src={user?.photoURL} />
                         </div>
                     </div>
-                    <Link onClick={handleLogout} to="/login" className="btn btn-primary text-black">
+                    <Link
+                        onClick={handleLogout}
+                        to="/login"
+                        className="btn btn-primary text-black"
+                    >
                         Logout
                     </Link>
                 </div>

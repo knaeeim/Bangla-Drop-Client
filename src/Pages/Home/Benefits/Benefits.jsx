@@ -5,6 +5,7 @@ import call from "../../../assets/benefits/call.png";
 import support from "../../../assets/benefits/support.png";
 
 const benefits = [
+    
     {
         id: 1,
         title: "Live Parcel Tracking",

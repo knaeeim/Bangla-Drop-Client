@@ -6,9 +6,9 @@ import { Link, Outlet } from "react-router";
 const AuthLayOut = () => {
     return (
         <div className="bg-base-200 py-3 px-5">
-            <Link to='/' className="w-48 flex justify-self-center items-center">
+            <div to='/' className="w-48 flex justify-self-center items-center">
                 <BanglaDropLogo></BanglaDropLogo>
-            </Link>
+            </div>
             <div className="hero-content flex-col-reverse items-center lg:flex-row-reverse p-12">
                 <div className="flex-1 flex justify-center items-center">
                     <img src={authImg} className="max-w-lg rounded-lg" />
