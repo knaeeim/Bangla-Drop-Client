@@ -5,7 +5,7 @@ import { Link } from "react-router";
 const BanglaDropLogo = () => {
     return (
         <Link to="/">
-            <div>
+            <div className="flex items-center">
                 <img src={logo} alt="Logo"></img>
             </div>
         </Link>

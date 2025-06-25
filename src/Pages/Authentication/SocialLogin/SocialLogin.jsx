@@ -1,16 +1,25 @@
 import React from "react";
 import useAuth from "../../../hooks/useAuth";
+import { useLocation, useNavigate } from "react-router";
+import toast from "react-hot-toast";
 
 const SocialLogin = () => {
     const { loginWithGoogle } = useAuth();
+    const location = useLocation(); 
+    const navigate = useNavigate();
+
+    const from = location?.state || "/";
 
     const handleGoogleLogin = () => {
         loginWithGoogle()
             .then((result) => {
                 console.log(result);
+                toast.success("Login Successful");
+                navigate(from, { replace: true });
             })
             .catch((error) => {
                 console.log(error);
+                toast.error(error.message);
             });
     };
 

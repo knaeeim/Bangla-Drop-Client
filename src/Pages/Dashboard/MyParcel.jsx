@@ -1,9 +1,72 @@
-import React from 'react';
+import React from "react";
+import useAuth from "../../hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const MyParcel = () => {
+    const { user } = useAuth();
+    const axiosSecure = useAxiosSecure();
+
+    const { data: parcels = [] } = useQuery({
+        queryKey: ["my-parcel", user?.email],
+        queryFn: async () => {
+            const result = await axiosSecure.get(
+                `/parcels?email=${user?.email}`
+            );
+            return result.data;
+        },
+    });
+
+    console.log(parcels);
+
     return (
-        <div>
-            <h1>All Parcel details are coming here....</h1>
+        <div className="w-full p-2 mx-auto sm:p-4 dark:text-gray-800">
+            <h2 className="mb-4 text-2xl font-semibold leading-tight">
+                MY Parcels :
+            </h2>
+            <div className="overflow-x-auto">
+                <table className="min-w-full text-xs">
+                    <colgroup>
+                        <col />
+                        <col />
+                        <col />
+                        <col />
+                        <col className="w-24" />
+                    </colgroup>
+                    <thead className="dark:bg-gray-300">
+                        <tr className="text-left">
+                            <th className="p-3">Tracking ID</th>
+                            <th className="p-3">Title</th>
+                            <th className="p-3">Created Date</th>
+                            <th className="p-3">Amount/fees</th>
+                            <th className="p-3">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {parcels.map((parcel) => (
+                            <tr key={parcel._id} className="border-b border-opacity-20 dark:border-gray-300 dark:bg-gray-50">
+                                <td className="p-3">
+                                    <p>{parcel.tracking_id}</p>
+                                </td>
+                                <td className="p-3">
+                                    <p>{parcel.title}</p>
+                                </td>
+                                <td className="p-3">
+                                    <p>{new Date(parcel.creation_date).toLocaleDateString()}</p>
+                                </td>
+                                <td className="p-3">
+                                    <p>$ {parcel.cost}</p>
+                                </td>
+                                <td className="p-3 text-right">
+                                    <span className="px-3 py-1 font-semibold rounded-md dark:bg-violet-600 dark:text-gray-50">
+                                        <span>{parcel.payment_status}</span>
+                                    </span>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };

@@ -1,7 +1,9 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import SocialLogin from "../SocialLogin/SocialLogin";
+import useAuth from "../../../hooks/useAuth";
+import toast from "react-hot-toast";
 
 const Login = () => {
     const {
@@ -10,8 +12,26 @@ const Login = () => {
         formState: { errors },
     } = useForm();
 
-    const onSubmit = (data) => {
-        console.log(data);
+    const { userLogin } = useAuth();
+
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    console.log(location);
+
+    const from = location?.state || "/";
+
+    const onSubmit = async(data) => {
+        // console.log(data);
+        try {
+            const result = await userLogin(data.email, data.password)  
+            if(result){
+                toast.success("Login Successful");
+                navigate(from, { replace: true });
+            }
+        } catch (error) {
+            toast.error(error.message);
+        }
     };
 
     return (

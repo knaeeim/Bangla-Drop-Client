@@ -58,7 +58,7 @@ export const router = createBrowserRouter([
         children: [
             {
                 path: "my-parcel",
-                element: <MyParcel></MyParcel>
+                element: <MyParcel></MyParcel>,
             }
         ]
     }
