@@ -6,7 +6,7 @@ const DashBoardLayOut = () => {
     return (
         <div className="drawer lg:drawer-open">
             <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-            <div className="drawer-content flex flex-col items-center mt-16">
+            <div className="drawer-content flex flex-col items-center md:mt-16">
                 {/* Navbar */}
                 <div className="navbar bg-base-300 w-full lg:hidden">
                     <div className="flex-none">
@@ -30,7 +30,7 @@ const DashBoardLayOut = () => {
                             </svg>
                         </label>
                     </div>
-                    <div className="mx-2 flex-1 px-2">Navbar Title</div>
+                    <div className="mx-2 flex-1 px-2">DashBoard</div>
                 </div>
                 {/* Page content here */}
                 <h1 className="text-center text-3xl font-bold text-green-700">Welcome to User DashBoard</h1>
@@ -45,7 +45,7 @@ const DashBoardLayOut = () => {
                 <div className="w-20 h-20 flex items-center justify-center">
                     <BanglaDropLogo></BanglaDropLogo>
                 </div>
-                <ul className="menu bg-base-300 text-base-content min-h-[calc(100vh-80px)] w-80 shadow-2xl p-4">
+                <ul className="menu bg-base-300 text-base-content min-h-screen md:min-h-[calc(100vh-80px)] w-80 shadow-2xl p-4">
                     {/* Sidebar content here */}
                     <li>
                         <Link to="/">Home</Link>

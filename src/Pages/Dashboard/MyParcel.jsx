@@ -2,10 +2,13 @@ import React from "react";
 import useAuth from "../../hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { SiTicktick } from "react-icons/si";
+import { useNavigate } from "react-router";
 
 const MyParcel = () => {
     const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
+    const navigate = useNavigate();
 
     const { data: parcels = [] } = useQuery({
         queryKey: ["my-parcel", user?.email],
@@ -17,7 +20,10 @@ const MyParcel = () => {
         },
     });
 
-    console.log(parcels);
+    const handlePay = (parcelId) => {
+        console.log(parcelId);
+        navigate(`/dashboard/payment/${parcelId}`);
+    }
 
     return (
         <div className="w-full p-2 mx-auto sm:p-4 dark:text-gray-800">
@@ -31,6 +37,7 @@ const MyParcel = () => {
                         <col />
                         <col />
                         <col />
+                        <col />
                         <col className="w-24" />
                     </colgroup>
                     <thead className="dark:bg-gray-300">
@@ -40,6 +47,7 @@ const MyParcel = () => {
                             <th className="p-3">Created Date</th>
                             <th className="p-3">Amount/fees</th>
                             <th className="p-3">Status</th>
+                            <th className="p-3">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -57,10 +65,17 @@ const MyParcel = () => {
                                 <td className="p-3">
                                     <p>$ {parcel.cost}</p>
                                 </td>
-                                <td className="p-3 text-right">
+                                <td className="p-3">
                                     <span className="px-3 py-1 font-semibold rounded-md dark:bg-violet-600 dark:text-gray-50">
                                         <span>{parcel.payment_status}</span>
                                     </span>
+                                </td>
+                                <td>
+                                    <div className="flex items-center justify-end gap-2">
+                                        {parcel.payment_status === "unpaid" ? <button onClick={() => handlePay(parcel._id)} className="btn btn-sm btn-primary text-black">Pay</button> : `${<SiTicktick />} Paid`}
+                                        <button className="btn btn-sm btn-secondary text-black">Edit</button>
+                                        <button className="btn btn-sm btn-error text-black">Delete</button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}
