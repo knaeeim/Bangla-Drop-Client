@@ -23,7 +23,7 @@ const MyParcel = () => {
     const handlePay = (parcelId) => {
         console.log(parcelId);
         navigate(`/dashboard/payment/${parcelId}`);
-    }
+    };
 
     return (
         <div className="w-full p-2 mx-auto sm:p-4 dark:text-gray-800">
@@ -52,7 +52,9 @@ const MyParcel = () => {
                     </thead>
                     <tbody>
                         {parcels.map((parcel) => (
-                            <tr key={parcel._id} className="border-b border-opacity-20 dark:border-gray-300 dark:bg-gray-50">
+                            <tr
+                                key={parcel._id}
+                                className="border-b border-opacity-20 dark:border-gray-300 dark:bg-gray-50">
                                 <td className="p-3">
                                     <p>{parcel.tracking_id}</p>
                                 </td>
@@ -60,21 +62,48 @@ const MyParcel = () => {
                                     <p>{parcel.title}</p>
                                 </td>
                                 <td className="p-3">
-                                    <p>{new Date(parcel.creation_date).toLocaleDateString()}</p>
+                                    <p>
+                                        {new Date(
+                                            parcel.creation_date
+                                        ).toLocaleDateString()}
+                                    </p>
                                 </td>
                                 <td className="p-3">
                                     <p>$ {parcel.cost}</p>
                                 </td>
                                 <td className="p-3">
-                                    <span className="px-3 py-1 font-semibold rounded-md dark:bg-violet-600 dark:text-gray-50">
-                                        <span>{parcel.payment_status}</span>
+                                    <span className="px-3 py-1 font-semibold rounded-md">
+                                        <span>
+                                            {parcel.payment_status ===
+                                            "Paid" ? (
+                                                <button className="btn btn-xs btn-success">
+                                                    Paid
+                                                </button>
+                                            ) : (
+                                                <button className="btn btn-xs btn-error">
+                                                    Unpaid
+                                                </button>
+                                            )}
+                                        </span>
                                     </span>
                                 </td>
                                 <td>
                                     <div className="flex items-center justify-end gap-2">
-                                        {parcel.payment_status === "unpaid" ? <button onClick={() => handlePay(parcel._id)} className="btn btn-sm btn-primary text-black">Pay</button> : `${<SiTicktick />} Paid`}
-                                        <button className="btn btn-sm btn-secondary text-black">Edit</button>
-                                        <button className="btn btn-sm btn-error text-black">Delete</button>
+                                        {parcel.payment_status === "unpaid" && (
+                                            <button
+                                                onClick={() =>
+                                                    handlePay(parcel._id)
+                                                }
+                                                className="btn btn-sm btn-primary text-black">
+                                                Pay
+                                            </button>
+                                        )}
+                                        <button className="btn btn-sm btn-secondary text-black">
+                                            Edit
+                                        </button>
+                                        <button className="btn btn-sm btn-error text-black">
+                                            Delete
+                                        </button>
                                     </div>
                                 </td>
                             </tr>

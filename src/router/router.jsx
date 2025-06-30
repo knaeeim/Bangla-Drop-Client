@@ -10,6 +10,7 @@ import SendParcel from "../Pages/SendParcel/SendParcel";
 import DashBoardLayOut from "../LayOuts/DashBoardLayOut";
 import MyParcel from "../Pages/Dashboard/MyParcel";
 import Payment from "../Pages/Dashboard/Payment/Payment";
+import BeARider from "../Pages/BeARider/BeARider";
 
 export const router = createBrowserRouter([
     {
@@ -27,6 +28,12 @@ export const router = createBrowserRouter([
             {
                 path: "/about", 
                 element: <div>This is about page</div>
+            },
+            {
+                path: "/be-a-rider", 
+                element: <PrivateRoutes>
+                    <BeARider></BeARider>
+                </PrivateRoutes>
             },
             {
                 path: "/sendParcel",

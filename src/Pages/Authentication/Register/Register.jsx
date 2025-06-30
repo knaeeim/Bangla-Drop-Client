@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import useAuth from "../../../hooks/useAuth";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import SocialLogin from "../SocialLogin/SocialLogin";
+import axios from "axios";
+import toast from "react-hot-toast";
+import useAxios from "../../../hooks/useAxios";
 
 const Register = () => {
     const {
@@ -10,17 +13,63 @@ const Register = () => {
         handleSubmit,
         formState: { errors },
     } = useForm();
-    const { createUser } = useAuth();
+    const { createUser, updateUserProfile } = useAuth();
+    const [profilePicture, setProfilePicture] = useState("");
+    const navigate = useNavigate();
+    const axiosInstance = useAxios();
 
     const onSubmit = (data) => {
-        console.log(data);
+        // console.log(data);
         createUser(data.email, data.password)
-            .then((result) => {
+            .then(async (result) => {
                 console.log(result);
+
+                const userInfoForDataBase = {
+                    email: data.email,
+                    name: data.name,
+                    role: "user",
+                    created_at: new Date().toISOString(),
+                    last_login: new Date().toISOString(),
+                }
+
+                const userRes = await axiosInstance.post("/users", userInfoForDataBase);
+                console.log(userRes.data);
+
+                const userInfo = {
+                    displayName: data.name,
+                    photoURL: profilePicture,
+                };
+                // Update user profile with name and photo URL
+                try {
+                    const res = await updateUserProfile(userInfo);
+                    if(res){
+                        toast.success("Profile updated successfully!");
+                    }
+
+                } catch (error) {
+                    toast.error("Failed to update profile. Please try again.");
+                    console.error("Error updating profile:", error);
+                }
+
+                navigate("/");
             })
             .catch((error) => {
-                console.log(error);
+                toast.error(error);
             });
+    };
+
+    const handleImageUpload = async (e) => {
+        const image = e.target.files[0];
+        console.log(image);
+        const formData = new FormData();
+        formData.append("image", image);
+        const res = await axios.post(
+            `https://api.imgbb.com/1/upload?key=${
+                import.meta.env.VITE_IMGBB_API_KEY
+            }`,
+            formData
+        );
+        setProfilePicture(res.data.data.url);
     };
 
     return (
@@ -30,6 +79,36 @@ const Register = () => {
                     Create An Account Now!!
                 </h1>
                 <fieldset className="fieldset space-y-4">
+                    <div>
+                        <label className="label">Name</label>
+                        <input
+                            {...register("name", {
+                                required: true,
+                            })}
+                            type="text"
+                            className="input w-full"
+                            placeholder="Your Name"
+                        />
+                        {errors.email?.type === "required" && (
+                            <p className="text-red-700 mt-1 font-bold">
+                                Name is Required...Don't try to be cleaver
+                            </p>
+                        )}
+                        {errors.name && (
+                            <p className="text-red-700 mt-1 font-bold">
+                                {errors.name.message}
+                            </p>
+                        )}
+                    </div>
+                    <div>
+                        <label className="label">Photo Upload</label>
+                        <input
+                            onChange={handleImageUpload}
+                            type="file"
+                            className="input w-full pt-2"
+                            required
+                        />
+                    </div>
                     <div>
                         <label className="label">Email</label>
                         <input
@@ -85,7 +164,10 @@ const Register = () => {
                     </button>
                 </div>
                 <p className="mt-2">
-                    Alredey have an account? <Link className="underline text-blue-500" to="/login">Login</Link>
+                    Alredey have an account?{" "}
+                    <Link className="underline text-blue-500" to="/login">
+                        Login
+                    </Link>
                 </p>
             </form>
             <SocialLogin></SocialLogin>

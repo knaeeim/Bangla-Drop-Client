@@ -2,7 +2,7 @@ import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Loading from "../../Shared/Loading/Loading";
 import useAuth from "../../../hooks/useAuth";
@@ -13,26 +13,31 @@ const PaymentForm = () => {
     const [loading, setLoading] = useState(false);
     const [customError, setCustomError] = useState(null);
     const { user } = useAuth();
-    const { id : parcelId } = useParams();
-    const axiosSecure = useAxiosSecure()
+    const { id: parcelId } = useParams();
+    const axiosSecure = useAxiosSecure();
+    const navigate = useNavigate();
 
-
-    const { data: parcelInfo, isError, error, isLoading} = useQuery({
-        queryKey: ['payment', parcelId ], 
+    const {
+        data: parcelInfo,
+        isError,
+        error,
+        isLoading,
+    } = useQuery({
+        queryKey: ["payment", parcelId],
         queryFn: async () => {
             const res = await axiosSecure.get(`/parcel/${parcelId}`);
             return res.data;
-        }
-    })
+        },
+    });
 
-    const amount = parcelInfo?.cost; 
+    const amount = parcelInfo?.cost;
     const amountInCents = amount * 100;
 
-    if(isLoading){
-        return <Loading></Loading>
+    if (isLoading) {
+        return <Loading></Loading>;
     }
 
-    if(isError){
+    if (isError) {
         toast.error(error + "Please try again later.");
         return;
     }
@@ -53,7 +58,7 @@ const PaymentForm = () => {
         }
 
         const { error, paymentMethod } = await stripe.createPaymentMethod({
-            type: "card", 
+            type: "card",
             card,
         });
 
@@ -61,41 +66,59 @@ const PaymentForm = () => {
             setCustomError(error.message);
         } else {
             setCustomError(null);
-        }
+            console.log(paymentMethod);
+            const res = await axiosSecure.post("/create-payment-intent", {
+                amountInCents,
+                parcelId,
+            });
 
-        const res = await axiosSecure.post("/create-payment-intent", {
-            amountInCents, 
-            parcelId,
-        })
+            console.log(res);
 
-        console.log(res);
+            const result = await stripe.confirmCardPayment(
+                res.data.clientSecret,
+                {
+                    payment_method: {
+                        card: elements.getElement(CardElement),
+                        billing_details: {
+                            name: user?.displayName,
+                            email: user?.email,
+                        },
+                    },
+                }
+            );
 
-        const result = await stripe.confirmCardPayment(res.data.clientSecret, {
-            payment_method: {
-                card : elements.getElement(CardElement),
-                billing_details: {
-                    name: user?.displayName,
+            if (result.error) {
+                toast.error(result.error.message);
+            } else {
+                toast.success("Payment successful!");
+
+                const paymentData = {
+                    parcelId, 
                     email: user?.email,
+                    amount,
+                    transactionId: result.paymentIntent.id,
+                    paymentMethod: result.paymentIntent.payment_method,
+                }
+
+                const postedData = await axiosSecure.post("/payments", paymentData);
+
+                console.log(postedData);
+
+                if(postedData.data.insertedId) {
+                    toast.success("Payment recorded successfully!");
+                    navigate('/dashboard/my-parcel');
+                    setLoading(false);
                 }
             }
-        })
 
-        if(result.error) {
-            toast.error(result.error.message);
         }
-        else{
-            toast.success("Payment successful!");
-        }
-
-        setLoading(false);
     };
 
     return (
         <div>
             <form
                 onSubmit={handleSubmit}
-                className="md:w-[600px] w-[450px] mx-auto mt-10 bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 space-y-6"
-            >
+                className="md:w-[600px] w-[450px] mx-auto mt-10 bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 space-y-6">
                 <h2 className="text-xl font-semibold text-center text-gray-800 dark:text-white">
                     Enter Your Card Details
                 </h2>
@@ -121,13 +144,9 @@ const PaymentForm = () => {
                     />
                 </div>
 
-                {
-                    customError && (
-                        <p className="text-red-600 text-sm mt-2">
-                            {customError}
-                        </p>
-                    )
-                }
+                {customError && (
+                    <p className="text-red-600 text-sm mt-2">{customError}</p>
+                )}
 
                 <button
                     type="submit"
@@ -136,8 +155,7 @@ const PaymentForm = () => {
                         loading || !stripe
                             ? "bg-gray-400 cursor-not-allowed"
                             : "bg-green-600 hover:bg-green-700"
-                    }`}
-                >
+                    }`}>
                     {loading ? "Processing…" : "Pay for the PickUp"}
                 </button>
             </form>
