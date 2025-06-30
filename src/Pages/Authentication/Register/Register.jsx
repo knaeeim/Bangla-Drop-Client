@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import useAuth from "../../../hooks/useAuth";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import SocialLogin from "../SocialLogin/SocialLogin";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -17,6 +17,11 @@ const Register = () => {
     const [profilePicture, setProfilePicture] = useState("");
     const navigate = useNavigate();
     const axiosInstance = useAxios();
+    const location = useLocation(); 
+
+    console.log(location.state);
+
+    const from = location?.state || "/";
 
     const onSubmit = (data) => {
         // console.log(data);
@@ -51,7 +56,7 @@ const Register = () => {
                     console.error("Error updating profile:", error);
                 }
 
-                navigate("/");
+                navigate(from);
             })
             .catch((error) => {
                 toast.error(error);

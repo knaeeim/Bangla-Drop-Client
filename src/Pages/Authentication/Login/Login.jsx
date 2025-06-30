@@ -17,9 +17,9 @@ const Login = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    console.log(location);
+    // console.log(location);
 
-    const from = location?.state || "/";
+    const from = location?.state|| "/";
 
     const onSubmit = async(data) => {
         // console.log(data);
@@ -102,7 +102,7 @@ const Login = () => {
                 </div>
                 <p className="mt-2">
                     Didn't Register with us?{" "}
-                    <Link className="underline text-blue-500" to="/register">
+                    <Link state={location.state} className="underline text-blue-500" to="/register">
                         Register
                     </Link>
                 </p>
