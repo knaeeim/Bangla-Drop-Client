@@ -105,7 +105,7 @@ const PaymentForm = () => {
                 console.log(postedData);
 
                 if(postedData.data.insertedId) {
-                    toast.success("Payment recorded successfully!");
+                    toast.success("Payment recorded successfully!"); 
                     navigate('/dashboard/my-parcel');
                     setLoading(false);
                 }
